@@ -2,232 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missing Marks Submission Portal</title>
-    <link rel="shortcut icon" href="/assets/icons/logo.png" type="image/x-icon">
-    <link rel="icon" href="/assets/icons/logo.png" type="image/x-icon">
-    <style>
-        :root {
-            --soft-green: #f0fdf4;
-            --mid-green: #dcfce7;
-            --deep-green: #166534;
-            --accent-green: #22c55e;
-            --white: #ffffff;
-            --text: #1e293b;
-            --kenya-red: #BB0100;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            color: var(--text);
-        }
-
-        .content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-        }
-
-        .card {
-            background: var(--white);
-            width: 100%;
-            max-width: 650px;
-            border-radius: 32px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.04);
-            overflow: hidden;
-            border: 1px solid var(--mid-green);
-        }
-
-        .header {
-            padding: 45px 40px 10px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.85rem;
-            margin: 0;
-            color: var(--deep-green);
-            letter-spacing: -0.5px;
-        }
-
-        .header p {
-            color: #64748b;
-            margin-top: 10px;
-            font-size: 0.95rem;
-        }
-
-        form {
-            padding: 30px 45px 45px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.88rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--deep-green);
-            padding-left: 4px;
-        }
-
-        input, select {
-            padding: 15px 20px;
-            border-radius: 16px;
-            border: 1.5px solid var(--mid-green);
-            background: var(--soft-green);
-            font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-green);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.08);
-        }
-
-        .submit-btn {
-            grid-column: span 2;
-            background: var(--deep-green);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(22, 101, 52, 0.15);
-        }
-
-        .submit-btn:hover {
-            background: var(--accent-green);
-            transform: translateY(-2px);
-        }
-
-        /* Modal Overlay Styles */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .overlay.active {
-            display: flex;
-        }
-
-        .overlay.active .modal {
-            transform: scale(1);
-        }
-
-        .modal-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-        }
-
-        .modal.success .modal-icon {
-            background: var(--soft-green);
-            color: var(--accent-green);
-        }
-
-        .modal.error .modal-icon {
-            background: #fef2f2;
-            color: #ef4444;
-        }
-
-        .close-btn {
-            margin-top: 25px;
-            background: #f1f5f9;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #475569;
-        }
-
-        .timer-bar {
-            height: 4px;
-            background: var(--accent-green);
-            width: 100%;
-            margin-top: 20px;
-            border-radius: 2px;
-            transform-origin: left;
-        }
-
-        @keyframes shrink {
-            from { transform: scaleX(1); }
-            to { transform: scaleX(0); }
-        }
-
-        footer {
-            padding: 40px 20px;
-            text-align: center;
-            background: var(--white);
-            border-top: 1px solid var(--mid-green);
-        }
-
-        .flag-line {
-            display: flex;
-            height: 5px;
-            width: 70px;
-            margin: 15px auto 0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        @media (max-width: 600px) {
-            form { grid-template-columns: 1fr; }
-            .submit-btn { grid-column: span 1; }
-        }
-    </style>
+    
+    <title>Moi University Missing Marks Submission Portal | Official Student Claims System</title>
+    
+    <meta name="description" content="The official Moi University Missing Marks Submission Portal. Securely submit and track missing exam marks claims online. Built and maintained by Lutan Tech Systems.">
+    <meta name="keywords" content="Moi University, missing marks portal, MU results, exam claims, student grades, university results Kenya, Moi University portal, Lutan Tech">
+    <meta name="author" content="Lutan Tech Systems">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a2a66">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Moi University Missing Marks Submission Portal">
+    <meta property="og:description" content="Official platform for Moi University students to submit and follow up on missing exam marks securely online.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Moi University Missing Marks Portal">
+    <meta property="og:image" content="https://missing-marks-mu.vercel.app/assets/icons/og-image.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:url" content="https://missing-marks-mu.vercel.app/">
+    <meta property="og:locale" content="en_KE">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Moi University Missing Marks Portal">
+    <meta name="twitter:description" content="Submit and track missing marks claims at Moi University using the official online portal.">
+    <meta name="twitter:image" content="https://missing-marks-mu.vercel.app/assets/icons/og-image.png">
+    
+    <!-- Icons -->
+    <link rel="icon" href="/assets/icons/logo-2.png" type="image/png">
+    <link rel="apple-touch-icon" href="/assets/icons/icon.png">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Performance -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <link rel="stylesheet" href="/assets/css/main.css">
+        
 </head>
 <body>
 
 <div class="content">
     <div class="card">
         <div class="header">
-            <img src="/assets/icons/logo.png" alt="">
+            <div class="logo-holder"></div>
             <h1>Missing Marks Claim</h1>
             <p>Official submission for unresolved exam results</p>
             <hr>
@@ -288,80 +108,41 @@
     </div>
 </footer>
 
-<script>
-    const API_URL = "http://localhost:7820/submission/missing-marks";
-    let autoCloseTimer;
+<script src="/assets/js/main.js">
 
-    function showModal(type, title, message) {
-        const overlay = document.getElementById('overlay');
-        const modal = document.getElementById('modal');
-        const icon = document.getElementById('modalIcon');
-        const timerBar = document.getElementById('timerBar');
-        
-        modal.className = 'modal ' + type;
-        icon.innerHTML = type === 'success' ? '✓' : '✕';
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMsg').innerText = message;
-        
-        overlay.classList.add('active');
-
-        if (type === 'success') {
-            timerBar.style.display = 'block';
-            timerBar.style.animation = 'shrink 5s linear forwards';
-            autoCloseTimer = setTimeout(allowClose, 5000);
-        } else {
-            timerBar.style.display = 'none';
-        }
-    }
-    function allowClose(){
-        const btn = document.querySelector('.close-btn');
-        btn.disabled = false
-
-    }
-
-    function closeModal() {
-        document.getElementById('overlay').classList.remove('active');
-        clearTimeout(autoCloseTimer);
-    }
-
-    document.getElementById('missingMarksForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        
-        const payload = {
-            admNumber: document.getElementById('admNumber').value.trim().toUpperCase(),
-            name: document.getElementById('name').value.trim().toUpperCase(),
-            courseCode: document.getElementById('courseCode').value.trim().toUpperCase(),
-            courseTitle: document.getElementById('courseTitle').value.trim().toUpperCase(),
-            session: document.getElementById('session').value.toUpperCase(),
-            lecturerName: document.getElementById('lecturerName').value.trim().toUpperCase()
-        };
-
-        btn.disabled = true;
-        btn.innerText = "Processing...";
-
-        try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                showModal('success', 'Submission Successful', 'Your claim has been recorded with Reference ID: ' + (data.reference_id || "N/A"));
-                document.getElementById('missingMarksForm').reset();
-            } else {
-                showModal('error', 'Submission Failed', data.error || 'Please check your details and try again.');
-            }
-        } catch (err) {
-            showModal('error', 'Network Error', 'Could not connect to the server. Please ensure you are connected to the internet.');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Submit";
-        }
-    });
 </script>
-
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Moi University Missing Marks Submission Portal",
+      "applicationCategory": "Education",
+      "operatingSystem": "All",
+      "provider": {
+        "@type": "Organization",
+        "name": "Lutan Tech Systems",
+        "url": "https://lutan-tech.is-great.org"
+      },
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student"
+      }
+    }
+    </script>
+    <script>
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/sw.js")
+              .then(reg => {
+                console.log("SW registered 💪", reg.scope);
+              })
+              .catch(err => {
+                console.error("SW failed 😭", err);
+              });
+          });
+        }
+        </script>
+        
 </body>
 </html>

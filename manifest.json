@@ -1,0 +1,22 @@
+{
+    "name": "Moi University Missing Marks Portal",
+    "short_name": "MU Marks",
+    "description": "Official Moi University portal for missing marks submission by Lutan Tech Systems",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#166534",
+    "icons": [
+      {
+        "src": "/assets/icons/icon-192-1.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/assets/icons/icon-512-1.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
