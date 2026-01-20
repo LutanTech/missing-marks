@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        :root {
+            --deep-green: #166534;
+            --mid-green: #dcfce7;
+            --soft-green: #f0fdf4;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            padding: 2rem;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--deep-green);
+            line-height: 1;
+            margin-bottom: 1rem;
+            opacity: 0.2;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--deep-green);
+        }
+
+        p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--deep-green);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: #15803d;
+        }
+
+        .illustration {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="error-code">404</div>
+    <div class="illustration">🔍</div>
+    <h1>Missing Page</h1>
+    <p>The  resource you are looking for does not exist or has been moved to a new name.</p>
+    <a href="/" class="btn">Return</a>
+</div>
+
+</body>
+</html>
