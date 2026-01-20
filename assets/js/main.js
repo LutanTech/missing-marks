@@ -1,5 +1,5 @@
 // const API_URL = "http://localhost:7820/submission/missing-marks";
-const API_URL = "http://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
+const API_URL = "https://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
 let autoCloseTimer;
 
 function showModal(type, title, message) {
