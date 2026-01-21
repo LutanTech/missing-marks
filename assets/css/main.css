@@ -268,30 +268,18 @@ label {
     display: flex;
     padding: 10px;
     color: rgb(0, 0, 0);
-    font-weight: 500;
     justify-content: center;
     align-items: center;
-    border: 1px solid #00000022;
+    border: 1px solid #00000018;
     margin: 20px;
     border-radius: 5px;
-    background-image:linear-gradient( rgb(0, 255, 0));
-    background-color: #00ff083e;
+    background-color: #00ff0823;
     background-position: 0%;
     background-size: 20%;
     background-repeat: no-repeat;
     animation: backg 2s  infinite;
     box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.137);
     transition: all 1s ease-in-out;
-}
-@keyframes backg {
-    50%{
-        background-position: 100%;
-        color: rgb(43, 171, 4);
-    }
-    90%{
-        background-image: linear-gradient(rgba(0, 0, 0, 0.163));
-        color: rgb(43, 171, 4);
-
-    }
-    
+    font-size: small;
+    gap: 10px;
 }
