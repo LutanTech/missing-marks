@@ -1,4 +1,5 @@
 // const API_URL = "http://localhost:7820/submission/missing-marks";
+let firstClick = true
 const API_URL = "https://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
 let autoCloseTimer;
 function splitAndClean(value) {
@@ -6,6 +7,28 @@ function splitAndClean(value) {
         .split(',')
         .map(v => v.trim())
         .filter(v => v.length > 0);
+}
+
+function updateInputCounts() {
+    const counts = {
+        courseCode: splitAndClean(document.getElementById('courseCode').value).length,
+        courseTitle: splitAndClean(document.getElementById('courseTitle').value).length,
+        session: splitAndClean(document.getElementById('session').value).length,
+        lecturerName: splitAndClean(document.getElementById('lecturerName').value).length
+    };
+
+    document.getElementById('courseCodeCount').innerText = `(${counts.courseCode})`;
+    document.getElementById('courseTitleCount').innerText = `(${counts.courseTitle})`;
+    document.getElementById('sessionCount').innerText = `(${counts.session})`;
+    document.getElementById('lecturerCount').innerText = `(${counts.lecturerName})`;
+
+    const values = Object.values(counts);
+    const allMatch = values.every(v => v === values[0]);
+
+    Object.keys(counts).forEach(key => {
+        const spanId = key === 'lecturerName' ? 'lecturerCount' : `${key}Count`;
+        document.getElementById(spanId).style.color = allMatch ? '#16a34a' : '#dc2626';
+    });
 }
 
 function showModal(type, title, message) {
@@ -106,15 +129,25 @@ document.getElementById('missingMarksForm').addEventListener('submit', async (e)
         'Confirm Submission',
         `You are about to submit ${courseCodes.length} course(s):\n\n${preview}\nClick CLOSE to confirm.`
     );
+    firstClick = true
 
     allowClose();
 
+
+    
     // Wait for confirmation
     document.querySelector('.close-btn').onclick = async () => {
         closeModal();
+
+
+        if(!firstClick){
+            return
+        }
         btn.disabled = true;
         btn.innerText = "Processing...";
-
+        setTimeout(() => {
+            firstClick = false
+        }, 2000);
         try {
             const res = await fetch(API_URL, {
                 method: 'POST',
@@ -152,3 +185,8 @@ document.getElementById('missingMarksForm').addEventListener('submit', async (e)
         }
     };
 });
+document.addEventListener('DOMContentLoaded', ()=>{
+    ['courseCode', 'courseTitle', 'session', 'lecturerName'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateInputCounts);
+    });
+})
