@@ -4,6 +4,7 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 from fpdf import FPDF
 import uuid, io
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'exam_portal_secret'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Admin Auth Tokens
 ADMIN_OTP = "OTP/23"
@@ -28,24 +30,25 @@ class MissingMarkSubmission(db.Model):
     session = db.Column(db.String(50), nullable=False)
     lecturer_name = db.Column(db.String(120), nullable=False)
     submitted_at = db.Column(db.DateTime, nullable=False)
+    is_deleted = db.Column(db.Boolean, default=False, nullable=True)
 
     def to_dict(self):
         return {
-            "reference_id": self.reference_id,
-            "adm_number": self.adm_number,
-            "name": self.name,
-            "course_code": self.course_code,
-            "course_title": self.course_title,
-            "session": self.session,
-            "lecturer_name": self.lecturer_name,
-            "submitted_at": self.submitted_at.strftime("%Y-%m-%d %H:%M:%S")
-        }
+                "reference_id": self.reference_id,
+                "adm_number": self.adm_number,
+                "name": self.name,
+                "course_code": self.course_code,
+                "course_title": self.course_title,
+                "session": self.session,
+                "lecturer_name": self.lecturer_name,
+                "submitted_at": self.submitted_at.strftime("%Y-%m-%d %H:%M:%S")
+            }
 
 class PDF(FPDF):
     def footer(self):
         self.set_y(-15)
         self.set_font("Times", 'I', 8)
-        self.cell(0, 10, f"Page {self.page_no()} | Missing Marks Verification Report", 0, 0, 'C')
+        self.cell(0, 10, f"Page {self.page_no()} | https://missing-marks-mu.vercel.app", 0, 0, 'C')
 
 @app.route('/')
 def home():
@@ -57,11 +60,11 @@ def submit_missing_mark():
         data = request.get_json()
         adm_number = data.get('admNumber')
         name = data.get('name')
-        session = data.get('session')
 
         course_codes = [c.strip() for c in data.get('courseCode', '').split(',')]
         course_titles = [t.strip() for t in data.get('courseTitle', '').split(',')]
         lecturers = [l.strip() for l in data.get('lecturerName', '').split(',')]
+        sessions = [s.strip() for s in data.get('session', '').split(',')] 
 
         if not (len(course_codes) == len(course_titles) == len(lecturers)):
             return jsonify({'error': 'Course codes, titles, and lecturers count must match'}), 400
@@ -69,15 +72,15 @@ def submit_missing_mark():
         now = datetime.utcnow() + timedelta(hours=3)
         created_refs = []
 
-        for code, title, lecturer in zip(course_codes, course_titles, lecturers):
+        for code, title, lecturer, session in zip(course_codes, course_titles, lecturers):
 
             exists = MissingMarkSubmission.query.filter_by(
                 adm_number=adm_number,
-                course_code=code
+                course_code=code, is_deleted=False
             ).first()
 
             if exists:
-                continue  # skip duplicates silently or you can collect skipped ones
+                continue 
 
             ref = "MMK-" + uuid.uuid4().hex[:6].upper()
 
@@ -115,8 +118,11 @@ def get_all_submissions():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
     
-    pagination = MissingMarkSubmission.query.order_by(MissingMarkSubmission.submitted_at.desc()).paginate(page=page, per_page=per_page)
-    
+    pagination = MissingMarkSubmission.query \
+        .filter(MissingMarkSubmission.is_deleted == False) \
+        .order_by(MissingMarkSubmission.submitted_at.desc()) \
+        .paginate(page=page, per_page=per_page)
+        
     return jsonify({
         "total": pagination.total,
         "pages": pagination.pages,
@@ -146,18 +152,22 @@ def delete_submission(ref):
         return jsonify({'error': 'Unauthorized admin OTP'}), 401
     
     submission = MissingMarkSubmission.query.filter_by(reference_id=ref).first_or_404()
-    db.session.delete(submission)
+    deleted = submission.is_deleted
+    submission.is_deleted = not deleted
     db.session.commit()
-    return jsonify({'message': 'Record deleted successfully'})
+    deleted = submission.is_deleted
+    return jsonify({'message': f"Record {'deleted' if deleted else 'restored'} successfully"})
 
 @app.route('/download-missing-marks-pdf', methods=['GET'])
 def download_pdf():
-    submissions = MissingMarkSubmission.query.order_by(MissingMarkSubmission.submitted_at.asc()).all()
+    submissions =  MissingMarkSubmission.query \
+        .filter(MissingMarkSubmission.is_deleted == False) \
+        .order_by(MissingMarkSubmission.submitted_at.asc()).all()
     pdf = PDF(orientation='L', unit='mm', format='A4')
     pdf.add_page()
     
     pdf.set_font("Times", 'B', 16)
-    pdf.cell(0, 12, "EXAM MISSING MARKS CONSOLIDATED REPORT", ln=True, align='C')
+    pdf.cell(0, 12, "EXAM MISSING MARKS LIST", ln=True, align='C')
     pdf.set_font("Times", '', 10)
     pdf.cell(0, 8, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True, align='C')
     pdf.ln(10)
@@ -201,4 +211,5 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
+    print("app.run(debug=True, port=7820)")
     app.run(debug=True, port=7820)
