@@ -1,6 +1,12 @@
-// const API_URL = "http://localhost:7820/submission/missing-marks";
-const API_URL = "https://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
+const API_URL = "http://localhost:7820/submission/missing-marks";
+// const API_URL = "https://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
 let autoCloseTimer;
+function splitAndClean(value) {
+    return value
+        .split(',')
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+}
 
 function showModal(type, title, message) {
     const overlay = document.getElementById('overlay');
@@ -36,39 +42,113 @@ function closeModal() {
 
 document.getElementById('missingMarksForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const btn = document.getElementById('submitBtn');
+
+    const courseCodes = splitAndClean(document.getElementById('courseCode').value.toUpperCase());
+    const courseTitles = splitAndClean(document.getElementById('courseTitle').value.toUpperCase());
+    const lecturers = splitAndClean(document.getElementById('lecturerName').value.toUpperCase());
+    const sessions = splitAndClean(
+        document.getElementById('session').value.toUpperCase()
+    );
     
+    const counts = {
+        "Course Codes": courseCodes.length,
+        "Course Titles": courseTitles.length,
+        "Lecturers": lecturers.length,
+        "Sessions": sessions.length
+    };
+    
+    const values = Object.values(counts);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    
+    if (min !== max) {
+        let details = '';
+    
+        for (const [key, count] of Object.entries(counts)) {
+            if (count === min) {
+                details += `• ${key} has LESS items (${count})\n`;
+            } else if (count === max) {
+                details += `• ${key} has MORE items (${count})\n`;
+            }
+        }
+    
+        showModal(
+            'error',
+            'Input Count Mismatch',
+            `Please fix the following:\n\n${details}\nAll fields must have the same number of entries.`
+        );
+    
+        allowClose();
+        return;
+    }
+    
+
     const payload = {
         admNumber: document.getElementById('admNumber').value.trim().toUpperCase(),
         name: document.getElementById('name').value.trim().toUpperCase(),
-        courseCode: document.getElementById('courseCode').value.trim().toUpperCase(),
-        courseTitle: document.getElementById('courseTitle').value.trim().toUpperCase(),
-        session: document.getElementById('session').value.toUpperCase(),
-        lecturerName: document.getElementById('lecturerName').value.trim().toUpperCase()
+        courseCode: courseCodes.join(', '),
+        courseTitle: courseTitles.join(', '),
+        session: sessions.join(', '),
+        lecturerName: lecturers.join(', ')
     };
 
-    btn.disabled = true;
-    btn.innerText = "Processing...";
+    // Build confirmation message
+    let preview = '';
+    courseCodes.forEach((code, i) => {
+        preview += `${i + 1}. ${code} | ${courseTitles[i]} | ${lecturers[i]} | ${sessions[i]}\n`;
+    });
+    
 
-    try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const data = await res.json();
+    showModal(
+        'success',
+        'Confirm Submission',
+        `You are about to submit ${courseCodes.length} course(s):\n\n${preview}\nClick CLOSE to confirm.`
+    );
 
-        if (res.ok) {
-            showModal('success', 'Submission Successful', 'Your claim has been recorded with Reference ID: ' + (data.reference_id || "N/A"));
-            document.getElementById('missingMarksForm').reset();
-        } else {
-            showModal('error', 'Submission Failed', data.error || 'Please check your details and try again.');
+    allowClose();
+
+    // Wait for confirmation
+    document.querySelector('.close-btn').onclick = async () => {
+        closeModal();
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showModal(
+                    'success',
+                    'Submission Successful',
+                    `Your claim was recorded.\nReference IDs: ${(data.reference_ids || []).join(', ')}`
+                );
+                document.getElementById('missingMarksForm').reset();
+            } else {
+                showModal(
+                    'error',
+                    'Submission Failed',
+                    data.error || 'Please check your details and try again.'
+                );
+            }
+
+        } catch (err) {
+            showModal(
+                'error',
+                'Network Error',
+                'Could not connect to the server. Check your internet connection.'
+            );
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Submit";
+            allowClose();
         }
-    } catch (err) {
-        showModal('error', 'Network Error', 'Could not connect to the server. Please ensure you are connected to the internet.');
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Submit";
-        allowClose()
-    }
+    };
 });

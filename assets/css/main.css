@@ -73,16 +73,27 @@ label {
     padding-left: 4px;
 }
 
-input, select {
+input, select, textarea {
     padding: 15px 20px;
-    border-radius: 16px;
+    border-radius: 7px;
     border: 1.5px solid var(--mid-green);
     background: var(--soft-green);
     font-size: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    resize: vertical;
+    min-height: 0.5em;
+    max-height: 10em;
+    &::-webkit-scrollbar{
+        display: none !important;
+    }
+    &::-webkit-resizer{
+        /* background: rgba(43, 255, 0, 0.293); */
+        border: 3px solid #00000039;
+        border-radius: 30px;
+    }
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--accent-green);
     background: var(--white);
@@ -226,4 +237,61 @@ footer {
 .support-line{
     width:fit-content;
     margin: auto;
+}
+label i{
+    position: relative;
+    margin-left: 6px;
+    font-style: normal;
+    &:before{
+        position: absolute;
+        content: '|';
+        width: 5px;
+        aspect-ratio: 1;
+        top: 0px;
+        left: -5px;
+        color: grey;
+        font-weight: 100;
+    }
+}
+label {
+    position: relative;
+    width: fit-content;
+    &::before{
+        position:absolute;
+        top: 0;
+        content: '*';
+        color: red;
+        right: -10px;
+    }
+}
+.notification{
+    display: flex;
+    padding: 10px;
+    color: rgb(0, 0, 0);
+    font-weight: 500;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #00000022;
+    margin: 20px;
+    border-radius: 5px;
+    background-image:linear-gradient( rgb(0, 255, 0));
+    background-color: #00ff083e;
+    background-position: 0%;
+    background-size: 20%;
+    background-repeat: no-repeat;
+    animation: backg 2s  infinite;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.137);
+    transition: all 1s ease-in-out;
+}
+@keyframes backg {
+    50%{
+        background-position: 100%;
+        color: rgb(43, 171, 4);
+    }
+    90%{
+        background-image: linear-gradient(rgba(0, 0, 0, 0.163));
+        color: rgb(43, 171, 4);
+
+    }
+    
 }

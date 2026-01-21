@@ -55,42 +55,60 @@ def home():
 def submit_missing_mark():
     try:
         data = request.get_json()
-        if not data:
-            return jsonify({'error': 'No data provided'}), 400
+        adm_number = data.get('admNumber')
+        name = data.get('name')
+        session = data.get('session')
 
-        exists = MissingMarkSubmission.query.filter_by(
-            adm_number=data.get('admNumber'), 
-            course_code=data.get('courseCode')
-        ).first()
-        
-        if exists:
-            return jsonify({'error': f'A missing mark claim already exists for {data.get("courseCode")}'}), 400
+        course_codes = [c.strip() for c in data.get('courseCode', '').split(',')]
+        course_titles = [t.strip() for t in data.get('courseTitle', '').split(',')]
+        lecturers = [l.strip() for l in data.get('lecturerName', '').split(',')]
 
-        ref = "MMK-" + uuid.uuid4().hex[:6].upper()
+        if not (len(course_codes) == len(course_titles) == len(lecturers)):
+            return jsonify({'error': 'Course codes, titles, and lecturers count must match'}), 400
+
         now = datetime.utcnow() + timedelta(hours=3)
+        created_refs = []
 
-        submission = MissingMarkSubmission(
-            reference_id=ref,
-            adm_number=data.get('admNumber'),
-            name=data.get('name'),
-            course_code=data.get('courseCode'),
-            course_title=data.get('courseTitle'),
-            session=data.get('session'),
-            lecturer_name=data.get('lecturerName'),
-            submitted_at=now
-        )
+        for code, title, lecturer in zip(course_codes, course_titles, lecturers):
 
-        db.session.add(submission)
+            exists = MissingMarkSubmission.query.filter_by(
+                adm_number=adm_number,
+                course_code=code
+            ).first()
+
+            if exists:
+                continue  # skip duplicates silently or you can collect skipped ones
+
+            ref = "MMK-" + uuid.uuid4().hex[:6].upper()
+
+            submission = MissingMarkSubmission(
+                reference_id=ref,
+                adm_number=adm_number,
+                name=name,
+                course_code=code,
+                course_title=title,
+                session=session,
+                lecturer_name=lecturer,
+                submitted_at=now
+            )
+
+            db.session.add(submission)
+            created_refs.append(ref)
+
         db.session.commit()
+
+        if not created_refs:
+            return jsonify({'error': 'All submitted courses already exist'}), 400
 
         return jsonify({
             "status": "success",
             "message": "Missing mark details recorded successfully.",
-            "reference_id": ref
+            "reference_ids": created_refs
         }), 201
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 @app.route('/all-sas-submissions', methods=['GET'])
 def get_all_submissions():

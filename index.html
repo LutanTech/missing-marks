@@ -48,6 +48,9 @@
 
 <div class="content">
     <div class="card">
+        <div class="notification">
+            Scheduled System Update: Today (8:30 AM)
+        </div>
         <div class="header">
             <div class="logo-holder"></div>
             <h1>Missing Marks Claim</h1>
@@ -65,29 +68,37 @@
                 <input type="text" id="name" placeholder="Enter Full Name" required>
             </div>
             <div class="form-group">
-                <label>Course Code</label>
-                <input type="text" id="courseCode" placeholder="e.g. LMC 210" required maxLength="9">
+                <label>Course Code<i>s</i> <span id="courseCodeCount">(0)</span></label>
+                <textarea type="text" id="courseCode" placeholder="e.g. LMC 210, BAS 101" required></textarea>
             </div>
+            
             <div class="form-group">
-                <label>Course Title</label>
-                <input type="text" id="courseTitle" placeholder="Enter Course Title" required maxlength="150">
+                <label>Course Title<i>s</i> <span id="courseTitleCount">(0)</span></label>
+                <textarea  id="courseTitle" placeholder="Enter Course Title (s)" required></textarea>
             </div>
+            
             <div class="form-group">
-                <label>Session</label>
-                <select id="session" required>
-                    <option value="" disabled selected>Select Session Type</option>
-                    <option value="Normal">Normal Exam</option>
-                    <option value="Special">Special Exam</option>
-                    <option value="Sup">Supplementary Exam</option>
-                </select>
+                <label>Session<i>s</i> <span id="sessionCount">(0)</span></label>
+                <textarea
+                    id="session"
+                    placeholder="e.g. NORMAL, SUP, SPECIAL"
+                    required
+                ></textarea>
+                <small style="color:#64748b; font-size:0.75rem;">
+                    Use commas if sessions differ per course
+                </small>
             </div>
+            
             <div class="form-group">
-                <label>Lecturer Name</label>
-                <input type="text" id="lecturerName" placeholder="Course Lecturer" required maxlength="30">
+                <label>Lecturer<i>s</i> Name<i>s</i> <span id="lecturerCount">(0)</span></label>
+                <textarea id="lecturerName" placeholder="Course Lecturer (s)" required></textarea>
             </div>
+        <i style="color:green; font-size:small">* required</i>
+            
             
             <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
         </form>
+        
     </div>
 </div>
 
