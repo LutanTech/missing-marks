@@ -214,6 +214,20 @@ def download_pdf():
     pdf_bytes = pdf.output(dest='S').encode('latin-1')
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name="missing_marks_records.pdf", mimetype='application/pdf')
 
+
+@app.route('/submissions', methods=['GET'])
+def get_student_submissions():
+    adm_number = request.args.get('admNumber')
+    
+    if not adm_number:
+        return jsonify({'error': 'Admission number is required'}), 400
+
+    submissions = MissingMarkSubmission.query.filter_by(
+        adm_number=adm_number
+    ).order_by(MissingMarkSubmission.submitted_at.desc()).all()
+
+    return jsonify([s.to_dict() for s in submissions])
+
 with app.app_context():
     db.create_all()
 

@@ -232,3 +232,9 @@ footer {
         flex-grow: 1;
     }
  }
+ .view-link{
+    color: rgb(3, 208, 3);
+    margin: auto;
+    width: fit-content;
+    display: flex;
+ }

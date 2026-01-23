@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Claims | Student Portal</title>
+    <style>
+        :root {
+            --soft-green: #f0fdf4;
+            --mid-green: #dcfce7;
+            --deep-green: #166534;
+            --accent-green: #22c55e;
+            --white: #ffffff;
+            --text: #1e293b;
+            --slate-400: #94a3b8;
+            --slate-100: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .top-nav h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--text);
+        }
+
+        .top-nav p {
+            margin: 5px 0 0 0;
+            color: var(--slate-400);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--accent-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .search-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid var(--mid-green);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--slate-400);
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+
+        input {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1.5px solid var(--mid-green);
+            background: var(--soft-green);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+
+        .btn-search {
+            padding: 15px 30px;
+            background: var(--deep-green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-search:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .claim-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--slate-100);
+            border-left: 5px solid var(--accent-green);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--slate-100);
+            margin-bottom: 15px;
+        }
+
+        .ref-info span {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--slate-400);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ref-info p {
+            margin: 2px 0 0 0;
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+
+        .subject-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .subject-row:last-child {
+            border-bottom: none;
+        }
+
+        .subject-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-code {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            background: var(--mid-green);
+            color: var(--deep-green);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 800;
+        }
+
+        .subject-title {
+            font-size: 0.85rem;
+            color: #475569;
+            margin: 4px 0;
+        }
+
+        .lecturer-info {
+            font-size: 0.75rem;
+            color: var(--slate-400);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--slate-400);
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .alert-amber {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            color: #92400e;
+        }
+
+        @media (max-width: 600px) {
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-nav">
+            <div>
+                <h1>View Claims</h1>
+                <p>View your submitted missing marks claims</p>
+            </div>
+            <a href="/" class="back-link">
+                &larr; New Submission
+            </a>
+        </div>
+
+        <div class="search-card">
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <label>Admission Number</label>
+                    <input 
+                        type="text" 
+                        id="searchAdm" 
+                        placeholder="e.g. BA/0000/23" 
+                        required
+                    >
+                </div>
+                <button type="submit" id="searchBtn" class="btn-search">
+                    Fetch Records
+                </button>
+            </form>
+        </div>
+
+        <div id="resultsArea">
+            <div class="empty-state">
+                <p>Enter your admission number to view records</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "https://missingmarks.eu.pythonanywhere.com/submissions";
+        //const API_BASE = "http://localhost:7820/submissions";
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const adm = document.getElementById('searchAdm').value.trim().toUpperCase();
+            const btn = document.getElementById('searchBtn');
+            const results = document.getElementById('resultsArea');
+
+            btn.disabled = true;
+            btn.innerHTML = "Searching...";
+
+            try {
+                const response = await fetch(`${API_BASE}?admNumber=${encodeURIComponent(adm)}`);
+                const data = await response.json();
+
+                if (!response.ok) throw new Error("Could not fetch data");
+
+                const claims = Array.isArray(data) ? data : (data|| []);
+                const filtered = data;
+
+                if (filtered.length === 0) {
+                    results.innerHTML = `
+                        <div class="alert alert-amber">
+                            <p style="margin:0; font-weight:700;">No claims found for ${adm}</p>
+                            <p style="margin:5px 0 0 0; font-size:0.8rem; opacity:0.8;">Check the number or submit a new claim.</p>
+                        </div>
+                    `;
+                } else {
+                    renderClaims(filtered);
+                }
+            } catch (err) {
+                console.log(err.message)
+                results.innerHTML = `
+                    <div class="alert" style="background:#fef2f2; border:1px solid #fee2e2; color:#991b1b;">
+                        <p style="margin:0; font-weight:700;">Error Accessing Records</p>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Fetch Records";
+            }
+        });
+
+        function renderClaims(claims) {
+            const results = document.getElementById('resultsArea');
+            results.innerHTML = `<h2 class="results-header">Found ${claims.length} Record(s)</h2>`;
+
+                
+            claims.reverse().forEach(claim => {
+                const card = document.createElement('div');
+                card.className = 'claim-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="ref-info">
+                            <span>Reference ID</span>
+                            <p>${claim.reference_id|| 'N/A'}</p>
+                        </div>
+                        <div class="ref-info" style="text-align:right">
+                             <span>Submitted</span>
+                             <p>${claim.submitted_at ? new Date(claim.submitted_at).toLocaleDateString() : 'Recent'}</p>
+                        </div>
+                    </div>
+                    <div class="subject-list">
+                                               <div class="subject-row">
+                            <div class="subject-top">
+                                <span class="subject-code">${claim.course_code}</span>
+                                <span class="status-badge">${claim.session || 'NORMAL'}</span>
+                            </div>
+                            <p class="subject-title"><i style="text-transform:capitalize; color:grey">${claim.course_title || 'N/A'}</i> by 
+                                <b> ${claim.lecturer_name || 'Not Assigned'}</b>
+                            </p>
+                        </div>
+                    </div>
+                `;
+                results.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
