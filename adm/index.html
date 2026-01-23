@@ -117,7 +117,9 @@
         }
 
         .badge-normal { background: var(--mid-green); color: var(--deep-green); }
-        .badge-special { background: #fef3c7; color: #92400e; }
+        .badge-special { background: #000000; color: #ffffff; }
+        .badge-sup { background:red; color: white; }
+        .badge-cat { background: #ffcc00; color: #000000; }
 
         /* Modal */
         .modal-overlay {
@@ -140,7 +142,7 @@
 
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-group input { 
+        .form-group input , select{ 
             width: 100%; 
             padding: 0.8rem; 
             border-radius: 10px; 
@@ -213,8 +215,22 @@
             <input type="text" id="editName">
         </div>
         <div class="form-group">
-            <label>Admin OTP (Required)</label>
-            <input type="password" id="editOtp" placeholder="Enter edit token">
+            <label>Session</label>
+            <select name="editSession" id="editSession">
+                <option value="CAT">CAT</option>
+                <option value="NORMAL">NORMAL</option>
+                <option value="SUP">SUPPLEMENTARY</option>
+                <option value="SPECIAL">SPECIAL</option>
+                <option value="RETAKE">RETAKE</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Lecturer</label>
+            <input type="text" id="editLec" placeholder="Edit Lec">
+        </div>
+        <div class="form-group">
+            <label>Admin Passsword (Required)</label>
+            <input type="text" id="editOtp" placeholder="Enter edit token" autocomplete="address-line">
         </div>
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
             <button class="btn btn-primary" style="flex:1" onclick="submitEdit()">Save Changes</button>
@@ -258,7 +274,7 @@
                 <td>${row.lecturer_name}</td>
                 <td>
                     <div style="display:flex; gap:0.5rem;">
-                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="openEdit('${row.reference_id}', '${row.name}')">Edit</button>
+                        <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="openEdit('${row.reference_id}', '${row.name}', '${row.session}', '${row.lecturer_name}')">Edit</button>
                         <button class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="deleteEntry('${row.reference_id}')">Del</button>
                     </div>
                 </td>
@@ -266,21 +282,25 @@
         `).join('');
     }
 
-    function openEdit(ref, name) {
+    function openEdit(ref, name, session, lec) {
         document.getElementById('editRef').value = ref;
-        document.getElementById('editName').value = name;
+        document.getElementById('editName').value = name;        
+        document.getElementById('editSession').value = session;
+        document.getElementById('editLec').value = lec;
         document.getElementById('editModal').style.display = 'flex';
     }
 
     async function submitEdit() {
-        const ref = document.getElementById('editRef').value;
-        const name = document.getElementById('editName').value.toUpperCase();
-        const otp = document.getElementById('editOtp').value;
+        const ref = document.getElementById('editRef').value.trim()
+        const name = document.getElementById('editName').value.trim()       
+        const session = document.getElementById('editSession').value.trim()
+        const lec = document.getElementById('editLec').value.trim()
+        const otp = document.getElementById('editOtp').value.trim()
 
         const res = await fetch(`${API_BASE}/edit/att/${ref}?otp=${otp}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, session, lec })
         });
 
         if(res.ok) {

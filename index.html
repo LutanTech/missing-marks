@@ -42,122 +42,276 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <meta name="monetag" content="0b4a984303a0b5ba4008a12d57e8318e">
     <script>(function(s){s.dataset.zone='10491952',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-        
+
 </head>
 <body>
 
 <div class="content">
     <div class="card">
-        <div class="notification">
-            <b><img width="40px" src="/assets/images/notiication.svg"> </b> Submit Multiple courses at once using commas Eg. BAS 101, ENG 410, LMC 111 , titles , sessions and lecture's names respectively. The counts should match
-        </div>
         <div class="header">
-            <div class="logo-holder"></div>
-            <h1>Missing Marks Claim</h1>
-            <p>Official submission for unresolved exam results</p>
-            <hr>
+            <div class="logo-holder">
+                <img src="https://portal.mu.ac.ke/assets/images/logo2.png" alt="Logo">
+            </div>
+            <h1 id="mainTitle">Missing Marks Form</h1>
+            <div class="step-indicator" id="stepIndicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
         </div>
 
-        <form id="missingMarksForm">
-            <div class="form-group">
-                <label>Adm Number</label>
-                <input type="text" id="admNumber" placeholder="e.g. BA/0000/23" required maxlength="13">
+        <form id="multiStepForm">
+            <!-- Step 1: Identity -->
+            <div class="step-content active" data-step="1">
+                <div class="form-group">
+                    <label>Registration Number</label>
+                    <input type="text" id="admNumber" placeholder="e.g. BA/0000/23" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" placeholder="As per Student ID" required>
+                </div>
+                <div class="form-group">
+                    <label>Course Code(s) <small>(Comma separated: LMC 110, BAS 101)</small></label>
+                    <textarea id="courseCodes" placeholder="Enter codes separated by commas" required></textarea>
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-next" onclick="nextStep(2)">Next: Course Details</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Student Name</label>
-                <input type="text" id="name" placeholder="Enter Full Name" required>
+
+            <!-- Step 2: Course Details (Dynamic) -->
+            <div class="step-content" data-step="2">
+                <div id="dynamicCourseContainer">
+                    <!-- Dynamic fields injected here -->
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-prev" onclick="prevStep(1)">Back</button>
+                    <button type="button" class="btn btn-next" onclick="nextStep(3)">Next: Final Review</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Course Code<i>s</i> <span id="courseCodeCount">(0)</span></label>
-                <textarea type="text" id="courseCode" placeholder="e.g. LMC 210, BAS 101" required></textarea>
+
+            <!-- Step 3: Submission -->
+            <div class="step-content" data-step="3">
+                <div id="summaryContainer">
+                    <!-- Summary injected here -->
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-prev" onclick="prevStep(2)">Back</button>
+                    <button type="submit" class="btn btn-next" id="submitBtn">Confirm & Submit</button>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Course Title<i>s</i> <span id="courseTitleCount">(0)</span></label>
-                <textarea  id="courseTitle" placeholder="Enter Course Title (s)" required></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Session<i>s</i> <span id="sessionCount">(0)</span></label>
-                <textarea
-                    id="session"
-                    placeholder="e.g. NORMAL, SUP, SPECIAL"
-                    required
-                ></textarea>
-                <small style="color:#64748b; font-size:0.75rem;">
-                    Use commas if sessions differ per course
-                </small>
-            </div>
-            
-            <div class="form-group">
-                <label>Lecturer<i>s</i> Name<i>s</i> <span id="lecturerCount">(0)</span></label>
-                <textarea id="lecturerName" placeholder="Course Lecturer (s)" required></textarea>
-            </div>
-        <i style="color:green; font-size:small">* required</i>
-            
-            
-            <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
         </form>
-        
     </div>
 </div>
 
 <div class="overlay" id="overlay">
-    <div class="modal" id="modal">
-        <div class="modal-icon" id="modalIcon"></div>
-        <h2 id="modalTitle" style="margin: 0 0 10px; color: #1e293b;"></h2>
-        <p id="modalMsg" style="margin: 0; color: #64748b; line-height: 1.5;"></p>
-        <div id="timerBar" class="timer-bar" style="display:none;"></div>
-        <button class="close-btn" onclick="closeModal()" disabled>Close</button>
+    <div class="modal">
+        <h2 id="modalTitle"></h2>
+        <p id="modalMsg"></p>
+        <button class="btn btn-prev" style="margin-top:20px" onclick="closeModal()">Close</button>
     </div>
 </div>
 
 <footer>
-    <p style="color: #94a3b8; font-size: 0.85rem; font-weight: 500;">&copy; 2026 Lutan Systems | By <a href="https://lutan-tech.is-great.org?utm_source=Missing_Marks&utm_medium=direct" target="_blank">Lutan Tech</a></p>
-    <p style="font-size: small; color:
-    grey" class="support-line">Technical support: <i class="fab-fa-whatsapp"></i> 0711 80 82 86</p>
+    <p style="color: #94a3b8; font-size: 0.85rem;">&copy; 2026 <a href="https://lutan-tech.is-great.org/?utm_source=missing_marks&utm_medium=direct" target="_blank">Lutan Tech</a></p>
     <div class="flag-line">
         <div style="flex:1; background:black"></div>
         <div style="flex:1; background:var(--kenya-red)"></div>
         <div style="flex:1; background:var(--deep-green)"></div>
     </div>
+    <hr>
+    <div class="version">Version 2.0.0. View <a href="/releases">Changelog</a></div>
+
 </footer>
 
-<script src="/assets/js/main.js">
+<script>
+    const API_URL = "https://missingmarks.eu.pythonanywhere.com/submission/missing-marks";
+    let currentStep = 1;
+    let courseList = [];
 
-</script>
-<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Moi University Missing Marks Submission Portal",
-      "applicationCategory": "Education",
-      "operatingSystem": "All",
-      "provider": {
-        "@type": "Organization",
-        "name": "Lutan Tech Systems",
-        "url": "https://lutan-tech.is-great.org"
-      },
-      "audience": {
-        "@type": "EducationalAudience",
-        "educationalRole": "student"
-      }
+    const storageKey = 'missing_marks_draft';
+
+    function saveToDraft() {
+        const formData = {
+            admNumber: document.getElementById('admNumber').value,
+            name: document.getElementById('name').value,
+            courseCodes: document.getElementById('courseCodes').value,
+            dynamicData: {}
+        };
+
+        const dynamicInputs = document.querySelectorAll('#dynamicCourseContainer input, #dynamicCourseContainer select');
+        dynamicInputs.forEach(input => {
+            formData.dynamicData[input.id] = input.value;
+        });
+
+        localStorage.setItem(storageKey, JSON.stringify(formData));
     }
-    </script>
-    <script>
-        if ("serviceWorker" in navigator) {
-          window.addEventListener("load", () => {
-            navigator.serviceWorker
-              .register("/sw.js")
-              .then(reg => {
-                console.log("SW registered 💪", reg.scope);
-              })
-              .catch(err => {
-                console.error("SW failed 😭", err);
-              });
-          });
-        }
-        </script>
+
+    function loadDraft() {
+        const saved = localStorage.getItem(storageKey);
+        if (!saved) return;
+
+        const data = JSON.parse(saved);
+        document.getElementById('admNumber').value = data.admNumber || '';
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('courseCodes').value = data.courseCodes || '';
         
+        if(data.courseCodes) buildDynamicStep();
+        
+        Object.keys(data.dynamicData || {}).forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.value = data.dynamicData[id];
+        });
+    }
+
+    function buildDynamicStep() {
+        const codesRaw = document.getElementById('courseCodes').value;
+        courseList = codesRaw.split(',').map(c => c.trim()).filter(c => c.length > 0);
+        
+        const container = document.getElementById('dynamicCourseContainer');
+        container.innerHTML = `<h3>Enter details for ${courseList.length} course(s)</h3>`;
+
+        courseList.forEach((code, index) => {
+            const row = document.createElement('div');
+            row.className = 'dynamic-row';
+            row.innerHTML = `
+                <h4>COURSE: ${code.toUpperCase()}</h4>
+                <div class="form-group">
+                    <label>${code} Title</label>
+                    <input type="text" id="title_${index}" placeholder="e.g. Introduction to Communication" required oninput="saveToDraft()">
+                </div>
+                <div class="ses-lec">
+                    <div class="form-group">
+                        <label>Session</label>
+                        <select id="session_${index}" required onchange="saveToDraft()">
+                            <option value="NORMAL">Normal</option>
+                            
+                            <option value="SUP">Supplementary</option>
+                            <option value="SPECIAL">Special</option>
+                            <option value="CAT">CAT Marks</option>
+                            <option value="RETAKE">Retake Exam</option>
+                            <option value="RETAKE_CAT">Retake CAT Marks</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lecturer</label>
+                        <input type="text" id="lec_${index}" placeholder="Name" required oninput="saveToDraft()">
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function buildSummary() {
+        const container = document.getElementById('summaryContainer');
+        let html = `<h3>Review Submission</h3>
+                    <p><strong>Adm:</strong> ${document.getElementById('admNumber').value}</p>
+                    <p><strong>Name:</strong> ${document.getElementById('name').value}</p>
+                    <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">`;
+
+        courseList.forEach((code, index) => {
+            const title = document.getElementById(`title_${index}`).value;
+            const session = document.getElementById(`session_${index}`).value;
+            const lec = document.getElementById(`lec_${index}`).value;
+            html += `<div style="text-align:left; font-size:0.9rem; margin-bottom:10px; border-left:3px solid var(--accent-green); padding-left:10px">
+                        <strong>${code.toUpperCase()}</strong>: ${title}<br>
+                        <small>${session} | Lecturer: ${lec}</small>
+                     </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function nextStep(step) {
+        if (step === 2) {
+            if (!document.getElementById('admNumber').value || !document.getElementById('courseCodes').value) {
+                showModal( 'Error',"Please fill in basic info and course codes first.",'error');
+                return;
+            }
+            buildDynamicStep();
+        }
+        if (step === 3) {
+            const inputs = document.querySelectorAll('#dynamicCourseContainer input');
+            let valid = true;
+            inputs.forEach(i => { if(!i.value) valid = false; });
+            if(!valid) { showModal('Error', "Please complete all course details.", 'error'); return; }
+            buildSummary();
+        }
+
+        currentStep = step;
+        updateUI();
+        saveToDraft();
+    }
+
+    function prevStep(step) {
+        currentStep = step;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+        document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+        
+        const dots = document.querySelectorAll('.step-dot');
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i < currentStep);
+        });
+    }
+
+    function showModal(title, msg, type='info') {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = msg;
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('overlay').classList.add(`ov-${type}`);
+    }
+
+    function closeModal() {
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    document.getElementById('multiStepForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "Submitting...";
+
+        const payload = {
+            admNumber: document.getElementById('admNumber').value.toUpperCase(),
+            name: document.getElementById('name').value.toUpperCase(),
+            courseCode: courseList.join(', ').toUpperCase(),
+            courseTitle: courseList.map((_, i) => document.getElementById(`title_${i}`).value.toUpperCase()).join(', '),
+            session: courseList.map((_, i) => document.getElementById(`session_${i}`).value).join(', '),
+            lecturerName: courseList.map((_, i) => document.getElementById(`lec_${i}`).value.toUpperCase()).join(', ')
+        };
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                showModal("Success!", "Your missing marks claim has been submitted successfully.", 'success');
+                localStorage.removeItem(storageKey);
+                document.getElementById('multiStepForm').reset();
+                setTimeout(() => location.reload(), 3000);
+            } else {
+                showModal("Error", "There was an issue with the submission. Please try again.", 'error');
+            }
+        } catch (err) {
+            showModal("Network Error", "Could not reach the server. Please check your connection.", 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Confirm & Submit";
+        }
+    });
+
+    window.onload = loadDraft;
+    document.querySelectorAll('#admNumber, #name, #courseCodes').forEach(el => {
+        el.addEventListener('input', saveToDraft);
+    });
+</script>
 </body>
 </html>

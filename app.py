@@ -64,15 +64,15 @@ def submit_missing_mark():
         course_codes = [c.strip() for c in data.get('courseCode', '').split(',')]
         course_titles = [t.strip() for t in data.get('courseTitle', '').split(',')]
         lecturers = [l.strip() for l in data.get('lecturerName', '').split(',')]
-        sessions = [s.strip() for s in data.get('session', '').split(',')] 
+        sessions = [s.strip() for s in data.get('session', '').split(',')]
 
-        if not (len(course_codes) == len(course_titles) == len(lecturers)):
-            return jsonify({'error': 'Course codes, titles, and lecturers count must match'}), 400
+        if not (len(course_codes) == len(course_titles) == len(lecturers) == len(sessions)):
+            return jsonify({'error': 'Course codes, titles, lecturers, and sessions count must match'}), 400
 
         now = datetime.utcnow() + timedelta(hours=3)
         created_refs = []
 
-        for code, title, lecturer, session in zip(course_codes, course_titles, lecturers):
+        for code, title, lecturer, session in zip(course_codes, course_titles, lecturers, sessions):
 
             exists = MissingMarkSubmission.query.filter_by(
                 adm_number=adm_number,
@@ -80,7 +80,7 @@ def submit_missing_mark():
             ).first()
 
             if exists:
-                continue 
+                continue
 
             ref = "MMK-" + uuid.uuid4().hex[:6].upper()
 
@@ -117,12 +117,12 @@ def submit_missing_mark():
 def get_all_submissions():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    
+
     pagination = MissingMarkSubmission.query \
         .filter(MissingMarkSubmission.is_deleted == False) \
         .order_by(MissingMarkSubmission.submitted_at.desc()) \
         .paginate(page=page, per_page=per_page)
-        
+
     return jsonify({
         "total": pagination.total,
         "pages": pagination.pages,
@@ -135,13 +135,20 @@ def edit_submission(ref):
     otp = request.args.get('otp')
     if otp != EDIT_TOKEN:
         return jsonify({'error': 'Unauthorized edit token'}), 401
-    
+
     submission = MissingMarkSubmission.query.filter_by(reference_id=ref).first_or_404()
     data = request.get_json()
-    
+
     if 'name' in data:
         submission.name = data['name']
-    
+
+    if 'session' in data:
+        submission.session = data['session']
+        
+    if 'lec' in data:
+        submission.lecturer_name = data['lec']
+
+
     db.session.commit()
     return jsonify({'message': 'Update successful'})
 
@@ -150,7 +157,7 @@ def delete_submission(ref):
     otp = request.args.get('otp')
     if otp != ADMIN_OTP:
         return jsonify({'error': 'Unauthorized admin OTP'}), 401
-    
+
     submission = MissingMarkSubmission.query.filter_by(reference_id=ref).first_or_404()
     deleted = submission.is_deleted
     submission.is_deleted = not deleted
@@ -165,16 +172,16 @@ def download_pdf():
         .order_by(MissingMarkSubmission.submitted_at.asc()).all()
     pdf = PDF(orientation='L', unit='mm', format='A4')
     pdf.add_page()
-    
+
     pdf.set_font("Times", 'B', 16)
     pdf.cell(0, 12, "EXAM MISSING MARKS LIST", ln=True, align='C')
     pdf.set_font("Times", '', 10)
     pdf.cell(0, 8, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True, align='C')
     pdf.ln(10)
-    
+
     pdf.set_font("Times", 'B', 10)
     pdf.set_fill_color(220, 220, 220)
-    
+
     pdf.cell(12, 10, "#", 1, 0, 'C', True)
     pdf.cell(33, 10, "ADM NUMBER", 1, 0, 'C', True)
     pdf.cell(55, 10, "STUDENT NAME", 1, 0, 'C', True)
@@ -189,16 +196,16 @@ def download_pdf():
             pdf.set_fill_color(245, 245, 245)
         else:
             pdf.set_fill_color(255, 255, 255)
-            
+
         pdf.set_font("Times", '', 10)
         pdf.cell(12, 8, str(i), 1, 0, 'C', True)
         pdf.cell(33, 8, s.adm_number, 1, 0, 'L', True)
         pdf.cell(55, 8, s.name[:35], 1, 0, 'L', True)
         pdf.cell(30, 8, s.course_code, 1, 0, 'C', True)
-        
+
         pdf.set_font("Times", '', 8)
         pdf.cell(75, 8, s.course_title[:55], 1, 0, 'L', True)
-        
+
         pdf.set_font("Times", '', 10)
         pdf.cell(25, 8, s.session, 1, 0, 'C', True)
         pdf.cell(0, 8, s.lecturer_name[:35], 1, 1, 'L', True)
