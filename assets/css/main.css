@@ -97,6 +97,7 @@ input, select, textarea {
     background: var(--soft-green);
     font-size: 1rem;
     transition: all 0.3s ease;
+    padding-left: 40px;
 }
 
 input:focus, textarea:focus {
@@ -213,6 +214,13 @@ footer {
     a{
         text-decoration: none;
     }
+ } .ses-lec{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    div{
+        flex-grow: 1;
+    }
  }
  footer{
     background: #07302a;
@@ -224,17 +232,32 @@ footer {
     border: 1px solid #ffffff17;
  }
 }
- .ses-lec{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    div{
-        flex-grow: 1;
-    }
- }
+
  .view-link{
     color: rgb(3, 208, 3);
     margin: auto;
     width: fit-content;
     display: flex;
+ }
+ .inp-icon{
+    position: absolute;
+    left: 15px;
+    top: 30%;
+    border-right: 1px solid rgba(16, 16, 16, 0.371);
+    padding-right: 5px;
+    color: rgba(3, 118, 8, 0.968);
+ }
+ .input-group{
+    display: flex;
+    position: relative;
+    width: 100%;
+    input, select, textarea{
+        width: 100%;
+        resize: vertical;
+        max-height: 10em;
+        min-height: 1em;
+        &::-webkit-scrollbar{
+            /* display: none; */
+        }
+    }
  }

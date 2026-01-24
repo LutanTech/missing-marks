@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+DisAllow: /adm
+Disallow: /adm
+Sitemap: https://missing-marks-mu.vercel.app/sitemap.xml

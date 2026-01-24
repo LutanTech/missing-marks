@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <meta name="monetag" content="0b4a984303a0b5ba4008a12d57e8318e">
     <script>(function(s){s.dataset.zone='10491952',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 </head>
 <body>
@@ -65,15 +66,24 @@
             <div class="step-content active" data-step="1">
                 <div class="form-group">
                     <label>Registration Number</label>
+                    <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-id-card"></i></div>
                     <input type="text" id="admNumber" placeholder="e.g. BA/0000/23" required>
+                </div>
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>
+                    <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-scroll"></i></div>
                     <input type="text" id="name" placeholder="As per Student ID" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Course Code(s) <small>(Comma separated: LMC 110, BAS 101)</small></label>
+                    <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-book"></i></div>
                     <textarea id="courseCodes" placeholder="Enter codes separated by commas" required></textarea>
+                    </div>
                 </div>
                 <div class="btn-container">
                     <button type="button" class="btn btn-next" onclick="nextStep(2)">Next: Course Details</button>
@@ -123,7 +133,7 @@
         <div style="flex:1; background:var(--deep-green)"></div>
     </div>
     <hr>
-    <div class="version">Version 2.0.0. View <a href="/releases">Changelog</a></div>
+    <div class="version">Version 2.0.0 &FilledVerySmallSquare;  View <a href="/releases">Changelog</a> &FilledVerySmallSquare; <a href="/help/">Get Help</a></div>
 
 </footer>
 
@@ -181,11 +191,16 @@
                 <h4>COURSE: ${code.toUpperCase()}</h4>
                 <div class="form-group">
                     <label>${code} Title</label>
+                    <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-pen"></i></div>
                     <input type="text" id="title_${index}" placeholder="e.g. Introduction to Communication" required oninput="saveToDraft()">
+                    </div>
                 </div>
                 <div class="ses-lec">
                     <div class="form-group">
                         <label>Session</label>
+                        <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-university"></i></div>
                         <select id="session_${index}" required onchange="saveToDraft()">
                             <option value="NORMAL">Normal</option>
                             
@@ -196,9 +211,13 @@
                             <option value="RETAKE_CAT">Retake CAT Marks</option>
                         </select>
                     </div>
+                    </div>
                     <div class="form-group">
                         <label>Lecturer</label>
+                        <div class="input-group">
+                        <div class="inp-icon"><i class="fas fa-user"></i></div>
                         <input type="text" id="lec_${index}" placeholder="Name" required oninput="saveToDraft()">
+                        </div>
                     </div>
                 </div>
             `;

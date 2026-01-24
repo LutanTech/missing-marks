@@ -1,365 +1,205 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Claims | Student Portal</title>
-    <style>
-        :root {
-            --soft-green: #f0fdf4;
-            --mid-green: #dcfce7;
-            --deep-green: #166534;
-            --accent-green: #22c55e;
-            --white: #ffffff;
-            --text: #1e293b;
-            --slate-400: #94a3b8;
-            --slate-100: #f1f5f9;
-        }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-            padding: 20px;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <title>View Claims | Moi University Missing Marks Portal</title>
 
-        .container {
-            width: 100%;
-            max-width: 800px;
-        }
+    <!-- SEO Basics -->
+    <meta name="description" content="View and track your submitted missing marks claims on the official Moi University Missing Marks Submission Portal. Fast, secure, and student friendly.">
+    <meta name="keywords" content="Moi University, view claims, missing marks status, exam claims tracking, MU student portal, missing results Kenya">
+    <meta name="author" content="Lutan Tech Systems">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a2a66">
 
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+    <!-- Open Graph -->
+    <meta property="og:title" content="View Claims | Moi University Missing Marks Portal">
+    <meta property="og:description" content="Check the status of your missing exam marks claims through the official Moi University student portal.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Moi University Missing Marks Portal">
+    <meta property="og:image" content="https://missing-marks-mu.vercel.app/assets/icons/og-image.png">
+    <meta property="og:url" content="https://missing-marks-mu.vercel.app/view-claims">
+    <meta property="og:locale" content="en_KE">
 
-        .top-nav h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: var(--text);
-        }
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="View Claims | Moi University Missing Marks">
+    <meta name="twitter:description" content="Track and monitor your missing marks submissions at Moi University in real time.">
+    <meta name="twitter:image" content="https://missing-marks-mu.vercel.app/assets/icons/og-image.png">
 
-        .top-nav p {
-            margin: 5px 0 0 0;
-            color: var(--slate-400);
-            font-size: 0.9rem;
-        }
+    <!-- Icons -->
+    <link rel="icon" href="/assets/icons/logo-2.png" type="image/png">
+    <link rel="apple-touch-icon" href="/assets/icons/icon.png">
+    <link rel="manifest" href="/manifest.json">
 
-        .back-link {
-            text-decoration: none;
-            color: var(--accent-green);
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+    <!-- Performance -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
 
-        .search-card {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 24px;
-            border: 1px solid var(--mid-green);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-        }
-
-        label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--slate-400);
-            margin-bottom: 8px;
-            margin-left: 5px;
-        }
-
-        input {
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1.5px solid var(--mid-green);
-            background: var(--soft-green);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-green);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
-        }
-
-        .btn-search {
-            padding: 15px 30px;
-            background: var(--deep-green);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-search:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-search:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .results-header {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--slate-400);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            padding-left: 5px;
-        }
-
-        .claim-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--slate-100);
-            border-left: 5px solid var(--accent-green);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--slate-100);
-            margin-bottom: 15px;
-        }
-
-        .ref-info span {
-            display: block;
-            font-size: 0.65rem;
-            color: var(--slate-400);
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .ref-info p {
-            margin: 2px 0 0 0;
-            font-family: monospace;
-            font-weight: 700;
-            color: var(--text);
-            font-size: 0.85rem;
-        }
-
-        .subject-row {
-            padding: 12px 0;
-            border-bottom: 1px solid #f9fafb;
-        }
-
-        .subject-row:last-child {
-            border-bottom: none;
-        }
-
-        .subject-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .subject-code {
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .status-badge {
-            font-size: 0.65rem;
-            background: var(--mid-green);
-            color: var(--deep-green);
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-weight: 800;
-        }
-
-        .subject-title {
-            font-size: 0.85rem;
-            color: #475569;
-            margin: 4px 0;
-        }
-
-        .lecturer-info {
-            font-size: 0.75rem;
-            color: var(--slate-400);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--slate-400);
-        }
-
-        .alert {
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .alert-amber {
-            background: #fffbeb;
-            border: 1px solid #fef3c7;
-            color: #92400e;
-        }
-
-        @media (max-width: 600px) {
-            .search-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-    </style>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/view/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <div class="container">
         <div class="top-nav">
-            <div>
+            <div class="header-main">
                 <h1>View Claims</h1>
-                <p>View your submitted missing marks claims</p>
+                <p>Track the status of your reported missing marks</p>
             </div>
             <a href="/" class="back-link">
-                &larr; New Submission
+                <i class="fas fa-arrow-left"></i>
+                New Submission
             </a>
         </div>
 
         <div class="search-card">
             <form id="searchForm" class="search-form">
                 <div class="form-group">
-                    <label>Admission Number</label>
+                    <label>
+                        <i class="fas fa-id-card"></i>
+                        Admission Number
+                    </label>
                     <input 
                         type="text" 
                         id="searchAdm" 
-                        placeholder="e.g. BA/0000/23" 
-                        required
+                        placeholder="e.g. LMC/0327/23" 
+                        required 
                     >
                 </div>
                 <button type="submit" id="searchBtn" class="btn-search">
-                    Fetch Records
+                    <i class="fas fa-magnifying-glass"></i>
+                    <span>Fetch Records</span>
                 </button>
             </form>
         </div>
 
-        <div id="resultsArea">
+        <div id="resultsArea" class="results-section">
             <div class="empty-state">
-                <p>Enter your admission number to view records</p>
+                <i class="fas fa-folder-open"></i>
+                <p>Enter your admission number above to retrieve your claim history.</p>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = "https://missingmarks.eu.pythonanywhere.com/submissions";
-        //const API_BASE = "http://localhost:7820/submissions";
+        const API_BASE = "http://localhost:7820/submissions";
 
         document.getElementById('searchForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const adm = document.getElementById('searchAdm').value.trim().toUpperCase();
             const btn = document.getElementById('searchBtn');
+            const btnText = btn.querySelector('span');
+            const btnIcon = btn.querySelector('i');
             const results = document.getElementById('resultsArea');
 
             btn.disabled = true;
-            btn.innerHTML = "Searching...";
+            btnText.innerText = "Searching...";
+            btnIcon.className = "fas fa-circle-notch fa-spin";
 
             try {
                 const response = await fetch(`${API_BASE}?admNumber=${encodeURIComponent(adm)}`);
+                if (!response.ok) throw new Error("Server Error");
+                
                 const data = await response.json();
+                const claims = Array.isArray(data) ? data : [];
+                let name =''
+                 if(claims){
+                    claims.forEach(c=>{
+                        name = c.name
+                    })
+                }
 
-                if (!response.ok) throw new Error("Could not fetch data");
-
-                const claims = Array.isArray(data) ? data : (data|| []);
-                const filtered = data;
-
-                if (filtered.length === 0) {
+                if (claims.length === 0) {
                     results.innerHTML = `
-                        <div class="alert alert-amber">
-                            <p style="margin:0; font-weight:700;">No claims found for ${adm}</p>
-                            <p style="margin:5px 0 0 0; font-size:0.8rem; opacity:0.8;">Check the number or submit a new claim.</p>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-circle-exclamation fa-2x"></i>
+                            <div>
+                                <strong style="display:block">No records found</strong>
+                                <small>No claims are currently associated with ${adm}.</small>
+                            </div>
                         </div>
                     `;
                 } else {
-                    renderClaims(filtered);
+                    renderClaims(claims, name);
                 }
             } catch (err) {
-                console.log(err.message)
                 results.innerHTML = `
-                    <div class="alert" style="background:#fef2f2; border:1px solid #fee2e2; color:#991b1b;">
-                        <p style="margin:0; font-weight:700;">Error Accessing Records</p>
+                    <div class="alert alert-error">
+                        <i class="fas fa-triangle-exclamation fa-2x"></i>
+                        <div>
+                            <strong style="display:block">Network Error</strong>
+                            <small>Unable to connect to the portal. Please try again later.</small>
+                        </div>
                     </div>
                 `;
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = "Fetch Records";
+                btnText.innerText = "Fetch Records";
+                btnIcon.className = "fas fa-magnifying-glass";
             }
         });
 
-        function renderClaims(claims) {
-            const results = document.getElementById('resultsArea');
-            results.innerHTML = `<h2 class="results-header">Found ${claims.length} Record(s)</h2>`;
+        function renderClaims(claims, name) {
+            const resultsArea = document.getElementById('resultsArea');
+            resultsArea.innerHTML = `<h2><i class="fas fa-list-check"></i> Found ${claims.length} Claim(s) for ${name}</h2>`;
 
+            claims.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at)).forEach(claim => {
+                name = claim.name
                 
-            claims.reverse().forEach(claim => {
+                const session = (claim.session || 'NORMAL').toUpperCase();
                 const card = document.createElement('div');
                 card.className = 'claim-card';
+                
+                const dateStr = claim.submitted_at 
+                    ? new Date(claim.submitted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : 'Processing';
+
                 card.innerHTML = `
                     <div class="card-header">
-                        <div class="ref-info">
-                            <span>Reference ID</span>
-                            <p>${claim.reference_id|| 'N/A'}</p>
+                        <div class="meta-item">
+                            <span class="meta-label"><i class="fas fa-hashtag"></i> Reference</span>
+                            <span class="meta-value">${claim.reference_id || 'REF-TBD'}</span>
                         </div>
-                        <div class="ref-info" style="text-align:right">
-                             <span>Submitted</span>
-                             <p>${claim.submitted_at ? new Date(claim.submitted_at).toLocaleDateString() : 'Recent'}</p>
+                        <div class="meta-item" style="text-align:right">
+                            <span class="meta-label"><i class="fas fa-calendar-days"></i> Filed On</span>
+                            <span class="meta-value">${dateStr}</span>
                         </div>
                     </div>
-                    <div class="subject-list">
-                                               <div class="subject-row">
-                            <div class="subject-top">
-                                <span class="subject-code">${claim.course_code}</span>
-                                <span class="status-badge">${claim.session || 'NORMAL'}</span>
+                    <div class="subject-body">
+                        <div class="subject-main">
+                            <h3><i class="fas fa-book-open"></i> ${claim.course_code}</h3>
+                            <p class="subject-desc">${claim.course_title || 'Untitled Course'}</p>
+                            <div class="lecturer-tag">
+                                <i class="fas fa-user-tie"></i>
+                                ${claim.lecturer_name || 'Department Head'}
                             </div>
-                            <p class="subject-title"><i style="text-transform:capitalize; color:grey">${claim.course_title || 'N/A'}</i> by 
-                                <b> ${claim.lecturer_name || 'Not Assigned'}</b>
-                            </p>
+                        </div>
+                        <div class="status-badge cl-${session.toLowerCase()}">
+                            <i class="fas fa-tag"></i>
+                            ${session}
                         </div>
                     </div>
                 `;
-                results.appendChild(card);
+                resultsArea.appendChild(card);
+                
             });
         }
     </script>
+    <footer>
+        <p style="color: #94a3b8; font-size: 0.85rem;">&copy; 2026 <a href="https://lutan-tech.is-great.org/?utm_source=missing_marks&utm_medium=direct" target="_blank">Lutan Tech</a></p>
+        <div class="flag-line">
+            <div style="flex:1; background:black"></div>
+            <div style="flex:1; background:var(--kenya-red)"></div>
+            <div style="flex:1; background:var(--deep-green)"></div>
+        </div>
+        <hr>
+        <div class="version">Version 2.0.0. View <a href="/releases">Changelog</a></div>
+    
+    </footer>
 </body>
+
 </html>
